@@ -37,7 +37,7 @@
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/NERVChat.git
+git clone https://github.com/your-username/nChat.git
 cd nChat
 ```
 ### 2. Set up the Server
