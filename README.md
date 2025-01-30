@@ -24,7 +24,7 @@
 
 - **Qt 6.0** or later
 - **OpenSSL** (for secure connections, if needed)
-- A C++17 compatible compiler (GCC, Clang, MSVC)
+- A C++17 compatible compiler (QMake6)
 - **QtCreator**
 
 ### Dependencies:
