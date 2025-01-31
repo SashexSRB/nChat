@@ -30,8 +30,7 @@ MainWindow::~MainWindow() {
     delete socket;
 }
 
-void MainWindow::handleLogin()
-{
+void MainWindow::handleLogin() {
     QString username = ui->usernameInput->text();  // Access widgets directly from UI
     QString password = ui->passwordInput->text();
 
@@ -45,8 +44,7 @@ void MainWindow::handleLogin()
 }
 
 // Handle register action
-void MainWindow::handleRegister()
-{
+void MainWindow::handleRegister() {
     QString username = ui->usernameInput->text();
     QString password = ui->passwordInput->text();
 
@@ -73,8 +71,7 @@ void MainWindow::handleRegister()
 }
 
 // Connect to the server
-void MainWindow::connectToServer(const QString &username, const QString &password)
-{
+void MainWindow::connectToServer(const QString &username, const QString &password) {
     if (socket) {
         disconnectFromServer();
     }
@@ -89,10 +86,20 @@ void MainWindow::connectToServer(const QString &username, const QString &passwor
         socket->waitForReadyRead();
 
         QString response = socket->readAll();
+        //qDebug() << "Server response after login: " << response;
 
         if (response.contains("Login successful")) {
             this->username = username;
             showChatUI();
+
+            //qDebug() << "Chat history should be loaded?";
+            QTimer::singleShot(100, this, [this](){
+                while(socket->canReadLine()) {
+                    QByteArray message = socket->readLine();
+                    //qDebug() << "Received chat history line: " << message;
+                    ui->chatHistory->append(QString::fromUtf8(message.trimmed()));
+                }
+            });
         } else {
             QMessageBox::warning(this, "Login Failed", response);
         }
@@ -102,32 +109,29 @@ void MainWindow::connectToServer(const QString &username, const QString &passwor
 }
 
 // Show the chat UI (switch to chat page)
-void MainWindow::showChatUI()
-{
+void MainWindow::showChatUI() {
     stackedWidget->setCurrentWidget(chatPage);  // Switch to chat page after successful login
 }
 
 // Disconnect from the server
-void MainWindow::disconnectFromServer()
-{
+void MainWindow::disconnectFromServer() {
     if (socket) {
         socket->disconnectFromHost();
         socket->close();
         socket->deleteLater();
         socket = nullptr;
     }
+    ui->chatHistory->clear();
     showAuthUI();  // Show login page after logging out
 }
 
 // Show the authentication UI (switch to login page)
-void MainWindow::showAuthUI()
-{
+void MainWindow::showAuthUI() {
     stackedWidget->setCurrentWidget(loginPage);  // Switch to login page
 }
 
 // Handle received messages
-void MainWindow::onMessageReceived()
-{
+void MainWindow::onMessageReceived() {
     while (socket && socket->canReadLine()) {
         QString message = QString::fromUtf8(socket->readLine()).trimmed();
         ui->chatHistory->append(message);  // Access directly from UI
@@ -135,8 +139,7 @@ void MainWindow::onMessageReceived()
 }
 
 // Send a message
-void MainWindow::sendMessage()
-{
+void MainWindow::sendMessage() {
     if (socket && socket->state() == QTcpSocket::ConnectedState) {
         QString message = ui->messageInput->text();  // Access directly from UI
         QString dateTime = QDateTime::currentDateTime().toString("dd.MM.yyyy 'at' HH:mm ");

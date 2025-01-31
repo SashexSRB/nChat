@@ -136,8 +136,6 @@ void handleClient(int clientSocket, MessageHandler &messageHandler) {
             }
 
             // Handle chat message
-            std::cout << "Received: " << message;
-
             messageHandler.handleClientMessage(message, clientSocket, clientSockets, mtx); // Use MessageHandler
         }
     }

@@ -11,6 +11,7 @@
 #include <QDateTime>
 #include <QStackedWidget>
 #include <QMessageBox>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

@@ -22,6 +22,7 @@ void MessageHandler::sendChatHistoryToClients(int clientSocket) {
     std::string line;
 
     while(std::getline(file, line)) {
+        std::cout << line << std::endl;
         send(clientSocket, line.c_str(), line.size(), 0); //send each line to client
         send(clientSocket, "\n", 1, 0); //send newline character
     }
@@ -79,7 +80,7 @@ void MessageHandler::broadcastMessage(const std::string &message, int senderSock
 void MessageHandler::handleClientMessage(const std::string &message, int clientSocket, std::vector<int> &clientSockets, std::mutex &mtx) {
     std::string chatMessage = message; // Assume message is already formatted
 
-    std::cout << "Received: " << chatMessage;
+    std::cout << "Received: " << chatMessage << std::endl;
 
     broadcastMessage(chatMessage, clientSocket, clientSockets, mtx); // Broadcast the message with username
     saveMessage(chatMessage); // Save chat message to file

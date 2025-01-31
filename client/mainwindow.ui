@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>578</width>
-    <height>334</height>
+    <width>1280</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,12 +19,12 @@
      <rect>
       <x>20</x>
       <y>10</y>
-      <width>541</width>
-      <height>291</height>
+      <width>1241</width>
+      <height>671</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="loginPage">
      <widget class="QPushButton" name="registerButton">
@@ -107,8 +107,8 @@
      <widget class="QPushButton" name="sendButton">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>190</y>
+        <x>1060</x>
+        <y>620</y>
         <width>80</width>
         <height>26</height>
        </rect>
@@ -120,8 +120,8 @@
      <widget class="QPushButton" name="disconnectButton">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>220</y>
+        <x>1150</x>
+        <y>620</y>
         <width>80</width>
         <height>26</height>
        </rect>
@@ -135,8 +135,8 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>521</width>
-        <height>171</height>
+        <width>1221</width>
+        <height>601</height>
        </rect>
       </property>
       <property name="readOnly">
@@ -147,8 +147,8 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>190</y>
-        <width>431</width>
+        <y>620</y>
+        <width>1041</width>
         <height>26</height>
        </rect>
       </property>
@@ -161,7 +161,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>578</width>
+     <width>1280</width>
      <height>23</height>
     </rect>
    </property>
