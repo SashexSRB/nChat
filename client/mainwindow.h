@@ -5,6 +5,8 @@
 #include <QTcpSocket>
 #include <QVBoxLayout>
 #include <QTextEdit>
+#include <QTextStream>
+#include <QFile>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QLabel>
@@ -12,6 +14,9 @@
 #include <QStackedWidget>
 #include <QMessageBox>
 #include <QTimer>
+#include <QAction>
+#include <QMenu>
+#include <QDir>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -32,7 +37,9 @@ private slots:
     void sendMessage();
     void onMessageReceived();
     void disconnectFromServer();
-    void connectToServer(const QString &username, const QString &password);
+    void connectToServer(const QString &message);
+    void writeConnection(const std::string &ip, const std::string &port);
+    void editConnection();
     void showAuthUI();
     void showChatUI();
 
@@ -44,17 +51,19 @@ private:
     QString username;
 
     QStackedWidget *stackedWidget;
-    QWidget *loginPage;
-    QWidget *chatPage;
+    QWidget *pgLogin;
+    QWidget *pgChat;
 
-    QLineEdit *usernameInput;
-    QLineEdit *passwordInput;
-    QPushButton *loginButton;
-    QPushButton *registerButton;
+    QLineEdit *inputUname;
+    QLineEdit *inputPass;
+    QPushButton *btnLogin;
+    QPushButton *btnRegister;
 
-    QTextEdit *chatHistory;
-    QLineEdit *messageInput;
-    QPushButton *sendButton;
-    QPushButton *disconnectButton;
+    QTextEdit *textChatHistory;
+    QLineEdit *inputMessage;
+    QPushButton *btnSend;
+    QAction *actionDisconnect;
+    QAction *actionEditConnection;
+    QMenu *menuOptions;
 };
 #endif // MAINWINDOW_H

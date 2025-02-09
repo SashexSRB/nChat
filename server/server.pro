@@ -11,11 +11,11 @@ INCLUDEPATH += /usr/include/openssl
 
 SOURCES += \
         server.cpp \
-        userauth.cpp \
+        ../shared/userauth.cpp \
         ../shared/messageHandler.cpp
 
 HEADERS += \
-        userauth.h \
+        ../shared/userauth.h \
         ../shared/messageHandler.h
 
 INCLUDEPATH += ../shared

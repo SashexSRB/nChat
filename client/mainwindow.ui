@@ -15,127 +15,179 @@
   </property>
   <widget class="QWidget" name="stackedWidget_2">
    <widget class="QStackedWidget" name="stackedWidget">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>1241</width>
-      <height>671</height>
+      <x>0</x>
+      <y>0</y>
+      <width>1281</width>
+      <height>691</height>
      </rect>
     </property>
     <property name="currentIndex">
      <number>1</number>
     </property>
-    <widget class="QWidget" name="loginPage">
-     <widget class="QPushButton" name="registerButton">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>160</y>
-        <width>80</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Register</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="loginButton">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>130</y>
-        <width>80</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Login</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_3">
+    <widget class="QWidget" name="pgLogin">
+     <widget class="QWidget" name="gridLayoutWidget_2">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>91</width>
-        <height>18</height>
+        <width>1261</width>
+        <height>661</height>
        </rect>
       </property>
-      <property name="text">
-       <string>Username:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_4">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>70</y>
-        <width>58</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Password:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="usernameInput">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>141</width>
-        <height>26</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="passwordInput">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>141</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="echoMode">
-       <enum>QLineEdit::EchoMode::Password</enum>
-      </property>
+      <layout class="QGridLayout" name="mainGridLayout">
+       <property name="sizeConstraint">
+        <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+       </property>
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="gridLayout">
+         <property name="leftMargin">
+          <number>200</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>200</number>
+         </property>
+         <item row="12" column="1">
+          <widget class="QPushButton" name="btnRegister">
+           <property name="text">
+            <string>Register</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLineEdit" name="inputUname"/>
+         </item>
+         <item row="9" column="1">
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="13" column="1">
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="lblUname">
+           <property name="minimumSize">
+            <size>
+             <width>259</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Username:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="1">
+          <widget class="QLineEdit" name="inputPass">
+           <property name="echoMode">
+            <enum>QLineEdit::EchoMode::Password</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="2">
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="9" column="0">
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="7" column="1">
+          <widget class="QLabel" name="lblPass">
+           <property name="text">
+            <string>Password:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="1">
+          <widget class="QPushButton" name="btnLogin">
+           <property name="text">
+            <string>Login</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
     </widget>
-    <widget class="QWidget" name="chatPage">
-     <widget class="QPushButton" name="sendButton">
+    <widget class="QWidget" name="pgChat">
+     <widget class="QPushButton" name="btnSend">
       <property name="geometry">
        <rect>
-        <x>1060</x>
+        <x>920</x>
         <y>620</y>
         <width>80</width>
-        <height>26</height>
+        <height>31</height>
        </rect>
       </property>
       <property name="text">
        <string>Send</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="disconnectButton">
-      <property name="geometry">
-       <rect>
-        <x>1150</x>
-        <y>620</y>
-        <width>80</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Disconnect</string>
-      </property>
-     </widget>
-     <widget class="QTextEdit" name="chatHistory">
+     <widget class="QTextEdit" name="txtChatHistory">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>1221</width>
+        <width>991</width>
         <height>601</height>
        </rect>
       </property>
@@ -143,13 +195,23 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QLineEdit" name="messageInput">
+     <widget class="QLineEdit" name="inputMessage">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>620</y>
-        <width>1041</width>
-        <height>26</height>
+        <width>901</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QListWidget" name="listUsers">
+      <property name="geometry">
+       <rect>
+        <x>1010</x>
+        <y>10</y>
+        <width>256</width>
+        <height>641</height>
        </rect>
       </property>
      </widget>
@@ -165,8 +227,38 @@
      <height>23</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuOptions">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>Options</string>
+    </property>
+    <addaction name="actionDisconnect"/>
+    <addaction name="actionEditConnection"/>
+   </widget>
+   <addaction name="menuOptions"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionDisconnect">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Disconnect from Server</string>
+   </property>
+   <property name="iconText">
+    <string>Disconnect from Server</string>
+   </property>
+  </action>
+  <action name="actionEditConnection">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Edit Connection</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

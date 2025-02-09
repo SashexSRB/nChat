@@ -4,17 +4,68 @@
 #include <iomanip>
 #include <openssl/sha.h>
 #include <algorithm> // For std::remove_if
+#include <gpgme.h>   // GPGME library for PGP encryption
+#include <cstring>
+#include <sys/mman.h>  // For Linux (mprotect)
+
+/*#if defined(_WIN32) || defined(_WIN64)
+    #include <windows.h>
+    #include <wincrypt.h>
+#else
+    #include <sys/mman.h>
+    #include <sys/random.h>
+    #include <unistd.h>
+#endif
+
+void lockAndProtectPassword(std::string& password) {
+    size_t len = password.size();
+
+    // Check the password length
+    if (len == 0) {
+        throw std::invalid_argument("Password cannot be empty.");
+    }
+
+    // Allocate buffer to hold password
+    char* passwordBuffer = new char[len];
+
+    // Clear memory (zero out the buffer)
+    std::memset(passwordBuffer, 0, len);
+
+    // Copy password into the cleared memory
+    std::memcpy(passwordBuffer, password.c_str(), len);
+
+// Mark memory as read-only (protected)
+#ifdef _WIN32
+    DWORD oldProtect;
+    if (!VirtualProtect(passwordBuffer, len, PAGE_READONLY, &oldProtect)) {
+        delete[] passwordBuffer;
+        throw std::runtime_error("Failed to protect memory.");
+    }
+#elif __linux__
+    if (mprotect(passwordBuffer, len, PROT_READ) == -1) {
+        delete[] passwordBuffer;
+        throw std::runtime_error("Failed to protect memory.");
+    }
+#endif
+
+    // Now pass the protected memory reference to the hashing function
+    hashPassword(passwordBuffer, len);  // Your existing hashing function (e.g., SHA256)
+
+    // After use, clear memory and delete buffer
+    std::memset(passwordBuffer, 0, len);  // Clear memory before deleting
+    delete[] passwordBuffer;  // Now delete the buffer
+}*/
 
 std::string trim(const std::string& str) {
     std::string s = str;
 
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }));
+                return !std::isspace(ch);
+            }));
 
     s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }).base(), s.end());
+                return !std::isspace(ch);
+            }).base(), s.end());
 
     return s;
 }
@@ -25,7 +76,6 @@ std::string hashPassword(const std::string& password) {
     SHA256(reinterpret_cast<const unsigned char*>(password.c_str()), password.size(), hash);
 
     std::stringstream ss;
-
     for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
         ss << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(hash[i]);
     }

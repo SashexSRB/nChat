@@ -4,17 +4,24 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
 
+LIBS += -lssl -lcrypto
+INCLUDEPATH += /usr/include/openssl
+
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    editConnectionDialog.cpp \
     main.cpp \
     mainwindow.cpp \
+    ../shared/userauth.cpp \
     ../shared/messageHandler.cpp
 
 HEADERS += \
+    editConnectionDialog.h \
     mainwindow.h \
+    ../shared/userauth.h \
     ../shared/messageHandler.h
 
 FORMS += \

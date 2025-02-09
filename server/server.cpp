@@ -16,6 +16,7 @@
 #include <mutex>
 #include <fstream>
 #include <algorithm>
+#include <QDir>
 
 const int PORT = 1644;
 
@@ -65,13 +66,20 @@ void handleClient(int clientSocket, MessageHandler &messageHandler) {
         std::string message(buffer, 0, bytesRecv);
 
         // Check for login and registration commands
-        if (message.rfind("REGISTER ", 0) == 0) {  // Register command
-            std::string credentials = message.substr(9);
+        if (message.rfind(std::to_string(MAGIC_REGISTER) + " ",0) == 0) {  // Register command
+            std::string credentials = message.substr(std::to_string(MAGIC_REGISTER).length() + 1);
             size_t separatorPos = credentials.find(" ");
-            std::string username = credentials.substr(0, separatorPos);
-            std::string password = credentials.substr(separatorPos + 1);
 
-            if (registerUser(username, password)) {
+            if(separatorPos == std::string::npos) {
+                std::string error = "Invalid REGISTER format.\n";
+                send(clientSocket, error.c_str(), error.size(),0);
+                return;
+            }
+
+            std::string username = credentials.substr(0, separatorPos);
+            std::string hashedPassword = credentials.substr(separatorPos + 1);
+
+            if (registerUser(username, hashedPassword)) {
                 std::string success = "Registration successful for user: " + username + "\n";
 
                 send(clientSocket, success.c_str(), success.size(), 0);
@@ -80,22 +88,28 @@ void handleClient(int clientSocket, MessageHandler &messageHandler) {
 
                 send(clientSocket, error.c_str(), error.size(), 0);
             }
-        } else if (message.rfind("LOGIN ", 0) == 0) {  // Login command
-            std::string credentials = message.substr(6);
+
+        } else if (message.rfind(std::to_string(MAGIC_LOGIN) + " ", 0) == 0) {  // Login command
+            std::string credentials = message.substr(std::to_string(MAGIC_LOGIN).length()+1);
             size_t separatorPos = credentials.find(" ");
+
+            if(separatorPos == std::string::npos) {
+                std::string error = "Invalid LOGIN format. \n";
+                send(clientSocket, error.c_str(), error.size(), 0);
+                return;
+            }
+
             client.username = credentials.substr(0, separatorPos);
-            std::string password = credentials.substr(separatorPos + 1);
+            std::string receivedHash = credentials.substr(separatorPos + 1);
 
-            if (validateUser(client.username, password)) {
+            if (validateUser(client.username, receivedHash)) {
                 std::string success = "Login successful! Welcome " + client.username + "\n";
-
                 send(clientSocket, success.c_str(), success.size(), 0);
 
                 client.isLoggedIn = true; // Mark the user as logged in
 
-                std::string loginMessage = client.username + " has logged in.\n";
-
-                messageHandler.broadcastMessage(loginMessage, clientSocket, clientSockets, mtx);
+                std::string loginMessage = client.username + " has logged in.";
+                messageHandler.handleClientMessage(loginMessage, clientSocket, clientSockets, mtx);
 
                 // Add client to the list of clients
                 {
