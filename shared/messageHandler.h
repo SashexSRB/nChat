@@ -11,8 +11,8 @@
         void loadChatHistory(std::vector<int> &clientSockets, std::mutex &mtx); // Updated declaration
         void sendChatHistoryToClients(int clientSocket);
         void saveMessage(const std::string &message);
-        void handleClientMessage(const std::string &message, int clientSocket, std::vector<int> &clientSockets, std::mutex &mtx);
-        void broadcastMessage(const std::string &message, int senderSocket, const std::vector<int> &clientSockets, std::mutex &mtx);
+        void handleClientMessage(const std::string &message, std::vector<int> &clientSockets, std::mutex &mtx);
+        void broadcastMessage(const std::string &message, const std::vector<int> &clientSockets, std::mutex &mtx);
 
     private:
         const std::string chatHistoryFile = "chat_history.txt";

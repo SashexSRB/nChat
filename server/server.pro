@@ -16,7 +16,8 @@ SOURCES += \
 
 HEADERS += \
         ../shared/userauth.h \
-        ../shared/messageHandler.h
+        ../shared/messageHandler.h \
+        clientTask.h
 
 INCLUDEPATH += ../shared
 

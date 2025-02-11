@@ -35,7 +35,6 @@ private slots:
     void handleLogin();
     void handleRegister();
     void sendMessage();
-    void onMessageReceived();
     void disconnectFromServer();
     void connectToServer(const QString &message);
     void writeConnection(const std::string &ip, const std::string &port);

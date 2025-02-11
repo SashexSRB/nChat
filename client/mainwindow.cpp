@@ -4,6 +4,8 @@
 #include "editConnectionDialog.h"
 #include <fstream>
 #include <iostream>
+#include <QTimer>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -22,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnSend, &QPushButton::clicked, this, &MainWindow::sendMessage);
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::disconnectFromServer);
     connect(ui->actionEditConnection, &QAction::triggered, this, &MainWindow::editConnection);
-    connect(socket, &QTcpSocket::readyRead, this, &MainWindow::onMessageReceived);
 
     stackedWidget->addWidget(pgLogin);
     stackedWidget->addWidget(pgChat);
@@ -38,7 +39,6 @@ MainWindow::MainWindow(QWidget *parent)
         std::cout << "connection.conf created successfully in " << configFilePath.toStdString() << std::endl;
         outfile.close();
     }
-
 }
 
 MainWindow::~MainWindow() {
@@ -47,6 +47,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::handleLogin() {
+    disconnectFromServer();
     QString username = ui->inputUname->text();  // Access widgets directly from UI
     QString password = ui->inputPass->text();
 
@@ -57,9 +58,9 @@ void MainWindow::handleLogin() {
 
     std::string hashedPassword = hashPassword(password.toStdString());
     QString loginRequest = QString("%1 %2 %3\n")
-                                .arg(MAGIC_LOGIN)
-                                .arg(username)
-                                .arg(QString::fromStdString(hashedPassword));
+                               .arg(MAGIC_LOGIN)
+                               .arg(username)
+                               .arg(QString::fromStdString(hashedPassword));
 
     // Attempt to connect to server
     connectToServer(loginRequest);
@@ -78,9 +79,9 @@ void MainWindow::handleRegister() {
     std::string hashedPassword = hashPassword(password.toStdString());
 
     QString registerRequest = QString("%1 %2 %3\n")
-                                .arg(MAGIC_REGISTER)
-                                .arg(username)
-                                .arg(QString::fromStdString(hashedPassword));
+                                  .arg(MAGIC_REGISTER)
+                                  .arg(username)
+                                  .arg(QString::fromStdString(hashedPassword));
 
     // Attempt to register with the server
     QTcpSocket tempSocket;
@@ -130,7 +131,7 @@ void MainWindow::connectToServer(const QString &message) {
     quint16 serverPort;
 
     QFile file("connection.conf");
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&file);
         serverIP = in.readLine().trimmed();
         serverPort = in.readLine().trimmed().toUShort();
@@ -142,36 +143,49 @@ void MainWindow::connectToServer(const QString &message) {
     }
 
     socket = new QTcpSocket(this);
-    socket->connectToHost(serverIP, serverPort);
 
-    if (socket->waitForConnected(3000)) {
+    // Connect to the server
+    connect(socket, &QTcpSocket::connected, this, [this, message]() {
+        qDebug() << "Socket connected";
         socket->write(message.toUtf8());
         socket->waitForBytesWritten();
-        socket->waitForReadyRead();
+    });
 
-        QString response = socket->readAll();
-        //qDebug() << "Server response after login: " << response;
+    connect(socket, &QTcpSocket::readyRead, this, [this]() {
+        QString response = QString::fromUtf8(socket->readAll()).trimmed();
+        std::string normalResString = response.toStdString();
+        std::cout << normalResString << std::endl;
 
-        if (response.contains("Login successful")) {
-            this->username = message.section(' ', 1, 1);
-            showChatUI();
-
-            //qDebug() << "Chat history should be loaded?";
-            QTimer::singleShot(100, this, [this](){
-                while(socket->canReadLine()) {
-                    QByteArray message = socket->readLine();
-                    //qDebug() << "Received chat history line: " << message;
-                    ui->txtChatHistory->append(QString::fromUtf8(message.trimmed()));
+        if (this->username.isEmpty()) {
+            if (response.contains("Login successful")) {
+                qDebug() << "Login successful!";
+                int welcomePos = response.indexOf("Welcome");
+                if (welcomePos != -1) {
+                    this->username = response.mid(welcomePos + 8).trimmed();
                 }
-            });
+                showChatUI();
+            } else {
+                QMessageBox::warning(this, "Login Failed", response);
+            }
         } else {
-            QMessageBox::warning(this, "Login Failed", response);
+            ui->txtChatHistory->append(response.trimmed());
         }
-    } else {
-        QMessageBox::warning(this, "Connection Error", "Unable to connect to the server.");
-    }
-}
+    });
 
+    // Error handling
+    connect(socket, &QTcpSocket::errorOccurred, this, [](QAbstractSocket::SocketError error) {
+        qDebug() << "Socket error occurred: " << error;
+    });
+
+    // Handle disconnection
+    connect(socket, &QTcpSocket::disconnected, this, []() {
+        qDebug() << "Socket disconnected";
+    });
+
+    // Start connection
+    qDebug() << "Connecting to server...";
+    socket->connectToHost(serverIP, serverPort);
+}
 
 
 // Disconnect from the server
@@ -183,6 +197,7 @@ void MainWindow::disconnectFromServer() {
         socket = nullptr;
     }
     ui->txtChatHistory->clear();
+    this->username.clear();
     showAuthUI();  // Show login page after logging out
 }
 
@@ -200,23 +215,17 @@ void MainWindow::showAuthUI() {
     ui->actionEditConnection->setEnabled(true);
 }
 
-// Handle received messages
-void MainWindow::onMessageReceived() {
-    while (socket && socket->canReadLine()) {
-        QString message = QString::fromUtf8(socket->readLine()).trimmed();
-        ui->txtChatHistory->append(message);  // Access directly from UI
-    }
-}
-
 // Send a message
 void MainWindow::sendMessage() {
     if (socket && socket->state() == QTcpSocket::ConnectedState) {
         QString message = ui->inputMessage->text();  // Access directly from UI
+        if(message.isEmpty()) return;
+
         QString dateTime = QDateTime::currentDateTime().toString("dd.MM.yyyy 'at' HH:mm ");
         QString formattedMessage = QString("%1 - %2: %3").arg(username, dateTime, message);
+        qDebug() << formattedMessage;
 
         socket->write(formattedMessage.toUtf8());
-        ui->txtChatHistory->append(formattedMessage);  // Access directly from UI
         ui->inputMessage->clear();  // Access directly from UI
     } else {
         QMessageBox::warning(this, "Connection", "Not connected to server!");

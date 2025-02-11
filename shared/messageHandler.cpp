@@ -43,7 +43,7 @@ void MessageHandler::loadChatHistory(std::vector<int> &clientSockets, std::mutex
 
     while (std::getline(file, line)) {
         // Broadcast the loaded message to all clients
-        broadcastMessage(line, -1, clientSockets, mtx); // Use -1 as the senderSocket to indicate broadcasting
+        broadcastMessage(line, clientSockets, mtx); // Use -1 as the senderSocket to indicate broadcasting
     }
 
     file.close();
@@ -65,22 +65,26 @@ void MessageHandler::saveMessage(const std::string &message) {
 }
 
 // Function to broadcast messages to all connected clients
-void MessageHandler::broadcastMessage(const std::string &message, int senderSocket, const std::vector<int> &clientSockets, std::mutex &mtx) {
+void MessageHandler::broadcastMessage(const std::string &message, const std::vector<int> &clientSockets, std::mutex &mtx) {
     std::lock_guard<std::mutex> lock(mtx);
-
+    std::cout << "Broadcasting message: " << message << std::endl;
     for (int clientSocket : clientSockets) {
-        if (clientSocket != senderSocket) {
-            send(clientSocket, message.c_str(), message.size(), 0);
+        int bytesSent = send(clientSocket, message.c_str(), message.size(), 0);
+        if (bytesSent == -1) {
+            std::cerr << "Error sending message to client socket: " << clientSocket << std::endl;
+        } else {
+            std::cout << "Message sent to client: " << clientSocket << std::endl;
+            send(clientSocket, "\n", 1, 0);  // Ensure newline termination for the client
         }
     }
 }
 
 // Function to handle client communication messages
-void MessageHandler::handleClientMessage(const std::string &message, int clientSocket, std::vector<int> &clientSockets, std::mutex &mtx) {
+void MessageHandler::handleClientMessage(const std::string &message, std::vector<int> &clientSockets, std::mutex &mtx) {
     std::string chatMessage = message; // Assume message is already formatted
 
     //std::cout << "Received: " << chatMessage << std::endl;
 
-    broadcastMessage(chatMessage, clientSocket, clientSockets, mtx); // Broadcast the message with username
+    broadcastMessage(chatMessage, clientSockets, mtx); // Broadcast the message with username
     saveMessage(chatMessage); // Save chat message to file
 }
