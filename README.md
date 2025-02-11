@@ -1,6 +1,6 @@
-# NERVChat - Client-Server Chat Application
+# nChat - Client-Server Chat Application
 
-**NERVChat** is a simple client-server chat application built using **Qt 6** and **TCP sockets**. It allows users to register, log in, and chat in real-time. The client and server are separate applications, both written in C++ using Qt, and they communicate via a TCP connection.
+**nChat** is a simple client-server chat application built using **Qt 6** and **TCP sockets**. It allows users to register, log in, and chat in real-time. The client and server are separate applications, both written in C++ using Qt, and they communicate via a TCP connection.
 
 ## Features
 - **User authentication** (Login & Registration)
@@ -37,8 +37,8 @@
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/NERVChat.git
-cd NERVChat
+git clone https://github.com/your-username/nChat.git
+cd nChat
 ```
 ### 2. Set up the Server
 - Build it using the QtCreator
