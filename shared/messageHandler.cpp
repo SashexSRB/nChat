@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <cctype>
 
 #include <sys/socket.h>
 
@@ -43,7 +44,7 @@ void MessageHandler::loadChatHistory(std::vector<int> &clientSockets, std::mutex
 
     while (std::getline(file, line)) {
         // Broadcast the loaded message to all clients
-        broadcastMessage(line, clientSockets, mtx); // Use -1 as the senderSocket to indicate broadcasting
+        broadcastMessage(line, clientSockets, mtx);
     }
 
     file.close();

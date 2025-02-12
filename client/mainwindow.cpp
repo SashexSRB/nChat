@@ -151,10 +151,21 @@ void MainWindow::connectToServer(const QString &message) {
         socket->waitForBytesWritten();
     });
 
-    connect(socket, &QTcpSocket::readyRead, this, [this]() {
-        QString response = QString::fromUtf8(socket->readAll()).trimmed();
-        std::string normalResString = response.toStdString();
-        std::cout << normalResString << std::endl;
+    bool hasHistoryReceived = false;
+
+    connect(socket, &QTcpSocket::readyRead, this, [this, &hasHistoryReceived]() {
+        QByteArray rawData;
+
+        if(!hasHistoryReceived) {
+            rawData = socket->readAll();
+            hasHistoryReceived = true;
+        } else {
+            rawData = socket->readLine();
+        }
+
+        QString response = QString::fromUtf8(rawData).trimmed();
+        if(response.isEmpty()) return;
+        std::cout << "Processed message: [" << response.toStdString() << "]" << std::endl;
 
         if (this->username.isEmpty()) {
             if (response.contains("Login successful")) {
@@ -168,7 +179,7 @@ void MainWindow::connectToServer(const QString &message) {
                 QMessageBox::warning(this, "Login Failed", response);
             }
         } else {
-            ui->txtChatHistory->append(response.trimmed());
+            ui->txtChatHistory->append(response);
         }
     });
 
