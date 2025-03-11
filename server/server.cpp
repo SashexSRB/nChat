@@ -128,7 +128,7 @@ void handleClient(int clientSocket, MessageHandler &messageHandler) {
             }
 
             if (!isClientLoggedIn) {
-                std::string funnyMessage = "Unauthorized access attempt.\n";  // Error message
+                std::string funnyMessage = "NERVChat SERVER RESPONSE: You really thought you could use the terminal to echo netcat into the server? Go fuck yourself and use the client.\n";  // Error message
                 send(clientSocket, funnyMessage.c_str(), funnyMessage.size(), 0);
 
                 std::cout << "Unauthorized access attempt. Closing socket." << std::endl;
@@ -215,3 +215,4 @@ int main() {
 
     return 0;
 }
+//TODO: Device fingerprinting to ensure multiple clients from same local network can use the server, and not just one. wiki: https://en.wikipedia.org/wiki/Fingerprint_(computing)

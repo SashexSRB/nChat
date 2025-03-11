@@ -127,6 +127,8 @@ void MainWindow::connectToServer(const QString &message) {
         disconnectFromServer();
     }
 
+    //TODO: Give message to the user in case server connection unavailable/server dead as hell
+
     QString serverIP;
     quint16 serverPort;
 

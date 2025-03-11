@@ -205,7 +205,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QListWidget" name="listUsers">
+     <widget class="QListView" name="listUsers">
       <property name="geometry">
        <rect>
         <x>1010</x>
